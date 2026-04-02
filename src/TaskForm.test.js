@@ -5,7 +5,13 @@ import App from './App';
 jest.mock('./api', () => ({
   getTasks: jest.fn(() => Promise.resolve([])),
   createTask: jest.fn((task) =>
-    Promise.resolve({ id: 1, done: false, description: '', ...task })
+    Promise.resolve({
+      id: 1,
+      title: task.title,
+      priority: task.priority,
+      description: '',
+      done: false,
+    })
   ),
   updateTask: jest.fn(),
   deleteTask: jest.fn(),
