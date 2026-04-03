@@ -25,12 +25,14 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterFramework": ["<rootDir>/src/setupTests.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ],
     "transform": {
-      "^.+\\.[jt]sx?$": "babel-jest"
+      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
     },
     "moduleNameMapper": {
-      "\\.(css|less|scss)$": "<rootDir>/__mocks__/fileMock.js"
+      "\\.(css|less|scss|sass)$": "<rootDir>/src/FileMock.js"
     }
   }
 }
