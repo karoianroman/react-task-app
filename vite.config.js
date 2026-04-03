@@ -3,15 +3,13 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: './', // Робить шляхи відносними (вкрай важливо для Nginx)
+  server: {
+    host: true,
+    port: 8080
+  },
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      output: {
-        entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
-      }
-    }
+    emptyOutDir: true
   }
 });
