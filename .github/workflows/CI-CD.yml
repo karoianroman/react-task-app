@@ -53,7 +53,7 @@ jobs:
       - name: Build & Push Docker image
         run: |
           docker build \
-            --build-arg REACT_APP_API_URL=${{ secrets.API_URL }} \
+            --build-arg VITE_API_URL=${{ secrets.API_URL }} \
             -t ${{ env.IMAGE }}:${{ github.sha }} \
             -t ${{ env.IMAGE }}:latest .
           docker push ${{ env.IMAGE }}:${{ github.sha }}
