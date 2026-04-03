@@ -1,5 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import App from './App';
 
 jest.mock('./api', () => ({
@@ -20,10 +19,12 @@ jest.mock('./api', () => ({
 import { createTask, getTasks } from './api';
 
 const renderApp = async () => {
-  const user = userEvent.setup();
-  render(<App />);
+  await act(async () => { render(<App />); });
   await screen.findByPlaceholderText('New task...');
-  return { user };
+};
+
+const typeInInput = (input, value) => {
+  fireEvent.change(input, { target: { value } });
 };
 
 describe('TaskForm', () => {
@@ -52,9 +53,11 @@ describe('TaskForm', () => {
   });
 
   test('викликає createTask з правильними даними', async () => {
-    const { user } = await renderApp();
-    await user.type(screen.getByPlaceholderText('New task...'), 'Buy milk');
-    await user.click(screen.getByRole('button', { name: /add/i }));
+    await renderApp();
+    typeInInput(screen.getByPlaceholderText('New task...'), 'Buy milk');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /add/i }));
+    });
     await waitFor(() => {
       expect(createTask).toHaveBeenCalledWith({
         title: 'Buy milk',
@@ -64,25 +67,29 @@ describe('TaskForm', () => {
   });
 
   test('очищає поле після додавання', async () => {
-    const { user } = await renderApp();
+    await renderApp();
     const input = screen.getByPlaceholderText('New task...');
-    await user.type(input, 'Buy milk');
-    await user.click(screen.getByRole('button', { name: /add/i }));
+    typeInInput(input, 'Buy milk');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /add/i }));
+    });
     await waitFor(() => expect(input.value).toBe(''));
   });
 
   test('змінює пріоритет при кліку', async () => {
-    const { user } = await renderApp();
+    await renderApp();
     const highBtn = screen.getByRole('button', { name: /high/i });
-    await user.click(highBtn);
+    fireEvent.click(highBtn);
     expect(highBtn.className).toMatch(/active/);
   });
 
   test('надсилає обраний пріоритет', async () => {
-    const { user } = await renderApp();
-    await user.click(screen.getByRole('button', { name: /high/i }));
-    await user.type(screen.getByPlaceholderText('New task...'), 'Urgent task');
-    await user.click(screen.getByRole('button', { name: /add/i }));
+    await renderApp();
+    fireEvent.click(screen.getByRole('button', { name: /high/i }));
+    typeInInput(screen.getByPlaceholderText('New task...'), 'Urgent task');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /add/i }));
+    });
     await waitFor(() => {
       expect(createTask).toHaveBeenCalledWith({
         title: 'Urgent task',
@@ -92,9 +99,9 @@ describe('TaskForm', () => {
   });
 
   test('не надсилає пробіли як назву', async () => {
-    const { user } = await renderApp();
-    await user.type(screen.getByPlaceholderText('New task...'), '   ');
-    await user.click(screen.getByRole('button', { name: /add/i }));
+    await renderApp();
+    typeInInput(screen.getByPlaceholderText('New task...'), '   ');
+    fireEvent.click(screen.getByRole('button', { name: /add/i }));
     expect(createTask).not.toHaveBeenCalled();
   });
 });
