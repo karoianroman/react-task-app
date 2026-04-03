@@ -24,13 +24,13 @@
     "test": "jest"
   },
   "jest": {
-    "testEnvironment": "jsdom",
-    "setupFilesAfterFramework": ["<rootDir>/src/setupTests.js"],
-    "transform": {
-      "^.+\\.[jt]sx?$": "babel-jest"
-    },
-    "moduleNameMapper": {
-      "\\.(css|less|scss)$": "<rootDir>/__mocks__/fileMock.js"
-    }
+  "testEnvironment": "jsdom",
+  "setupFilesAfterFramework": ["<rootDir>/src/setupTests.js"],
+  "transform": {
+    "^.+\\.[jt]sx?$": "babel-jest"
+  },
+  "moduleNameMapper": {
+    "\\.(css|less|scss)$": "<rootDir>/__mocks__/fileMock.js"
   }
+ }
 }
